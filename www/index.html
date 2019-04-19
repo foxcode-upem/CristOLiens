@@ -170,7 +170,9 @@
   <script>
       ons.ready(function(){
          console.log('Ready');
-         
+          var globalLatLng;
+          timer = -1;
+          
           document.addEventListener('init', function(e){
          var page = e.target;
         console.log(page.id);
@@ -625,22 +627,23 @@
                          return distance/1000 + "km";
                      }
                      
-                     var map = L.map('maptest');
-              var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-              var osmAttrib = "Map data © OpenStreetMap contributors";
-                  
-                  var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
-              
-              map.addLayer(osm);
-                     
-                     navigator.geolocation.getCurrentPosition(function(position){
-                        var waypoint = L.latLng(position.coords.latitude, position.coords.longitude);
-                        
-                         map.setView([position.coords.latitude, position.coords.longitude], 12);
-                        
+                     function appelMapbox(latlng){
                          
-                         L.Routing.control({
-                  waypoints: [waypoint, L.latLng(48.796, 2.45226), L.latLng(48.7942, 2.46132)],
+                         if(latlng == undefined || latlng == null){
+                             latlng = globalLatLng;
+                             console.log(latlng);
+                         } else {
+                             globalLatLng = latlng;
+                         }
+                         
+                         console.log("appel " + latlng);
+                         
+                         var waypoint = L.latLng(latlng.lat, latlng.lng);
+                             
+                             map.setView([latlng.lat, latlng.lng], 12);
+                             
+                             L.Routing.control({
+                  waypoints: [waypoint, L.latLng(48.8531191, 2.6022836)],
                          language: 'fr',
                           router: L.Routing.mapbox("pk.eyJ1IjoidGhlb2Rvcm9zIiwiYSI6ImNqb2sxdW01YTAyN28zb21uY21jeXMzY3cifQ._g5OAq0Wjfou_LsBW07TAQ", {profile: "mapbox/walking"}),
                              lineOptions: {
@@ -649,7 +652,7 @@
                                         }
               }).addTo(map);
                      
-                     var coords = encodeURI(''+ position.coords.longitude +','+ position.coords.latitude +';2.45226,48.796;2.46132,48.7942');
+                     var coords = encodeURI(''+ latlng.lng +','+ latlng.lat +';2.6022836,48.8531191');
                      
                      
                      
@@ -660,9 +663,11 @@
                          dataType: 'json',
                          success: function(data){
                              
+                             $('.leaflet-top.leaflet-right').hide();
+                             
                              var turnInstruction;
                              
-                             console.log(data);
+                             console.log(JSON.stringify(data));
                              
                              console.log(convertToMinutes(data.routes[0].duration));
                              
@@ -705,15 +710,69 @@
                              }
                              
                              
-                             $('.leaflet-top.leaflet-right').html('<div class="leaflet-routing-container leaflet-bar leaflet-routing-collapsible leaflet-control"><div class="leaflet-routing-alternatives-container"><div class="leaflet-routing-alt"><div><span class="leaflet-routing-icon leaflet-routing-icon-'+ turnInstruction +'"></span></div><strong>'+ data.routes[0].legs[0].steps[0].distance +' m</strong><h1>' + data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.text + '</h1></div></div></div>');
+                             $('.leaflet-top.leaflet-right').html('<div class="leaflet-routing-container leaflet-bar leaflet-routing-collapsible leaflet-control"><div class="leaflet-routing-alternatives-container"><div class="leaflet-routing-alt"><div><span class="leaflet-routing-icon leaflet-routing-icon-'+ turnInstruction +'"></span></div><strong>'+ data.routes[0].legs[0].steps[0].distance +' m</strong><h1>' + data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.text + '</h1></div></div></div>').show();
                              
                              $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +', '+ convertToMinutes(data.routes[0].duration) +'</strong></blockquote>')
                              
                          }
                      });
+                     }
+                     
+                     function intervalleAppel(){
                          
+                     console.log("Réactualisé");
+                     
+                         if(map != undefined || map != null){
+                             map.remove();
+                             carteChargee = true;
+                         }
                          
-                     });
+                      map = L.map('maptest');
+              var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+              var osmAttrib = "Map data © OpenStreetMap contributors";
+                  
+                  var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+              
+                         console.log("Réactualisé 2");
+                         
+              map.addLayer(osm);
+                         
+                         console.log("Réactualisé 3");
+                         
+                         if(!carteChargee){
+                             
+                             new GPSControl({
+                         successCallback: function(latlng){
+                             
+                             console.log("Réactualisé 4");
+                             
+                             $('.leaflet-bar.gps-control').hide();
+                             
+                             console.log(latlng);
+                             
+                             appelMapbox(latlng);
+                             
+                             
+                             
+                             
+                         }
+                     }).addTo(map);
+                             
+                             
+                             
+                         }
+                     
+    
+                }
+                
+    var map;  
+    var carteChargee = false;
+                     
+                     intervalleAppel();
+                     
+//Utile pour tester l'appli sans se déplacer
+                     
+//timer = setInterval(appelMapbox, 5000);
                      
                      
     }
