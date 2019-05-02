@@ -104,7 +104,8 @@
            </div>
               <div class="center">Types de parcours</div>
           </ons-toolbar>
-          <ons-card></ons-card>
+          <ons-card class="card_sector"></ons-card>
+          <ons-card class="card_theme"></ons-card>
           <ons-button class="center">Personnaliser son parcours</ons-button>
       </ons-page>
             </template>
@@ -138,7 +139,7 @@
   
   <template id="carte_parcours.html">
                 <ons-page id="carte_parcours">
-            <ons-toolbar class="ons-toolbar">
+            <ons-toolbar>
                <div class="left">
                <ons-back-button>Retour</ons-back-button>
            </div>
@@ -299,7 +300,7 @@
                                              chaine += "<br><section>";
                                              
                                              for(var j = 0; j < tableau.length; j++){
-                                                 chaine += '<img src="'+ tableau[j] +'" alt="'+ tableau[j] +'" title="'+ tableau[j] +'" width="10%" height="10%">';
+                                                 chaine += '<img src="'+ tableau[j] +'" alt="'+ tableau[j] +'" title="'+ tableau[j] +'" width="20%" height="20%">';
                                              }
                                              
                                              chaine += "</section>";
@@ -472,17 +473,40 @@
                             });
                         }
                     
+                    function listeThemes(option){
+                        return $.ajax({
+                           url: 'https://theosenilh.fr/api_appli_creteil/liste_themes.php',
+                            method: 'GET',
+                            data: {api_key: "jdhey7te6", theme_id: option},
+                            dataType: 'json'
+                        });
+                    }
+                    
                     listeParcours("all").done(function(data){
-                        var chaine = "";
+                        var chaine = "<ons-list-header>Parcours par secteur</ons-list-header>";
                         
                         $.each(data, function(i){
-                            chaine += "<ons-list-item tappable tabindex=\""+ data[i].id_parcours +"\">"+ data[i].nom_parcours +"</ons-list-item>";
+                            chaine += "<ons-list-item class=\"sector\" tappable tabindex=\""+ data[i].id_parcours +"\">"+ data[i].nom_parcours +"</ons-list-item>";
                         });
                         
-                        $('ons-card').html(chaine);
+                        $('.card_sector').html(chaine);
                         
-                     $('ons-list-item').on('click', function(){
-                            document.querySelector('ons-navigator').pushPage('carte_parcours.html', {data: {id: $(this).attr('tabindex'), title: $(this).text()}});
+                     $('ons-list-item.sector').on('click', function(){
+                            document.querySelector('ons-navigator').pushPage('carte_parcours.html', {data: {id: $(this).attr('tabindex'), title: $(this).text(), type: "secteur"}});
+                        });
+                    });
+                    
+                    listeThemes("all").done(function(data){
+                        var chaine = "<ons-list-header>Parcours par thème</ons-list-header>";
+                        
+                        $.each(data, function(i){
+                            chaine += "<ons-list-item class=\"theme\" tappable tabindex=\""+ data[i].id_theme +"\">"+ data[i].nom_theme +"</ons-list-item>";
+                        });
+                        
+                        $('.card_theme').html(chaine);
+                        
+                     $('ons-list-item.theme').on('click', function(){
+                            document.querySelector('ons-navigator').pushPage('carte_parcours.html', {data: {id: $(this).attr('tabindex'), title: $(this).text(), type: "theme"}});
                         });
                     });
                     
@@ -570,8 +594,9 @@
                   var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
               
               map.addLayer(osm);
-                            
-                            $.ajax({
+                                      
+    if(page.data.type === "secteur"){
+                                          $.ajax({
                                url: 'https://theosenilh.fr/api_appli_creteil/liste_points_interet_parcours.php',
                                 method: 'GET',
                                 data: {api_key: "jdhey7te6", parcours_id: parseInt(page.data.id)},
@@ -606,8 +631,51 @@
                                     
                                 }
                             });
+                                      } else if(page.data.type === "theme"){
+                                          $.ajax({
+                                             url: "https://theosenilh.fr/api_appli_creteil/liste_points_interet_theme.php",
+                                              method: 'GET',
+                                              data: {api_key: "jdhey7te6", theme_id: parseInt(page.data.id)},
+                                              dataType: 'json',
+                                              success: function(data){
+                                                  $('.leaflet-right').hide();
+                                    
+                                    console.log(data);
+                                    
+                                    var tableauWaypoints = [];
+                                    
+                                    navigator.geolocation.getCurrentPosition(function(position){
+                                        
+                                        map.setView([position.coords.latitude, position.coords.longitude], 12);
+                                       tableauWaypoints.push(L.latLng(position.coords.latitude, position.coords.longitude)); 
+                                        
+                                        $.each(data, function(i){
+                                       tableauWaypoints.push(L.latLng(parseFloat(data[i].latitude_point_interet), parseFloat(data[i].longitude_point_interet))); 
+                                    });
+                                    
+                                    console.log(tableauWaypoints);
+                                    
+                                    L.Routing.control({
+                  waypoints: tableauWaypoints,
+                          router: L.Routing.mapbox("pk.eyJ1IjoidGhlb2Rvcm9zIiwiYSI6ImNqb2sxdW01YTAyN28zb21uY21jeXMzY3cifQ._g5OAq0Wjfou_LsBW07TAQ", {profile: "mapbox/walking"}),
+                                        lineOptions: {
+                                            addWaypoints: false
+                                        }
+              }).addTo(map);
+                                        
+                                    });
+                                    
+                                }
+                                          });
+                                      }
                             
                  } else if(page.id === "about"){
+                     
+                     (function(){
+                         $('.leaflet-top.leaflet-right').hide();
+                         
+                         $('.leaflet-bar.gps-control').hide();
+                     })();
                      
                      function convertToMinutes(duration){
                          var duration = ""+ duration/60 + "";
@@ -624,7 +692,7 @@
                      }
                      
                      function convertToKilometers(distance){
-                         return distance/1000 + "km";
+                         return (distance/1000).toPrecision(3) + "km";
                      }
                      
                      function appelMapbox(latlng){
@@ -640,7 +708,7 @@
                          
                          var waypoint = L.latLng(latlng.lat, latlng.lng);
                              
-                             map.setView([latlng.lat, latlng.lng], 12);
+                             map.setView([latlng.lat, latlng.lng], 18);
                              
                              L.Routing.control({
                   waypoints: [waypoint, L.latLng(48.8531191, 2.6022836)],
@@ -649,7 +717,21 @@
                              lineOptions: {
                                             addWaypoints: false,
                                  draggableWaypoints: false
-                                        }
+                                        },
+                                 createMarker: function(i, waypoint){
+                                     if(i === 0){
+                                         
+                                         var myIcon = L.icon({
+                                            iconUrl: 'img/gps_pointer.png',
+                                             iconSize: [38, 95],
+                                             iconAnchor: [22, 94]
+                                         });
+                                         
+                                         return L.marker(waypoint.latLng, {icon: myIcon});
+                                     } else {
+                                         return L.marker(waypoint.latLng);
+                                     }
+                                 }
               }).addTo(map);
                      
                      var coords = encodeURI(''+ latlng.lng +','+ latlng.lat +';2.6022836,48.8531191');
@@ -663,11 +745,9 @@
                          dataType: 'json',
                          success: function(data){
                              
-                             $('.leaflet-top.leaflet-right').hide();
-                             
                              var turnInstruction;
                              
-                             console.log(JSON.stringify(data));
+                             console.log(data);
                              
                              console.log(convertToMinutes(data.routes[0].duration));
                              
@@ -676,6 +756,8 @@
                              if(data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.type === "arrive"){
                                  turnInstruction = "arrive";
                              } else {
+                                 
+                                 console.log(data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.modifier);
                                  switch(data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.modifier){
                                  case "straight":
                                      turnInstruction = "continue";
@@ -709,8 +791,13 @@
                                  
                              }
                              
+                             if(turnInstruction === "fork-right" || turnInstruction === "fork-left"){
+                                 turnInstruction = "bear-" + data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.modifier;
+                             }
                              
-                             $('.leaflet-top.leaflet-right').html('<div class="leaflet-routing-container leaflet-bar leaflet-routing-collapsible leaflet-control"><div class="leaflet-routing-alternatives-container"><div class="leaflet-routing-alt"><div><span class="leaflet-routing-icon leaflet-routing-icon-'+ turnInstruction +'"></span></div><strong>'+ data.routes[0].legs[0].steps[0].distance +' m</strong><h1>' + data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.text + '</h1></div></div></div>').show();
+                             console.log(turnInstruction);
+                             
+                             $('.leaflet-top.leaflet-right').html('<div class="leaflet-routing-container leaflet-bar leaflet-routing-collapsible leaflet-control"><div class="leaflet-routing-alternatives-container"><div class="leaflet-routing-alt"><div><span class="leaflet-routing-icon leaflet-routing-icon-'+ turnInstruction +'"></span></div><strong>'+ data.routes[0].legs[0].steps[0].distance.toPrecision(3) +' m</strong><h1>' + data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.text + '</h1></div></div></div>').show();
                              
                              $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +', '+ convertToMinutes(data.routes[0].duration) +'</strong></blockquote>')
                              
@@ -723,6 +810,9 @@
                      console.log("Réactualisé");
                      
                          if(map != undefined || map != null){
+                             map.eachLayer(function(layer){
+                            map.removeLayer(layer);
+                         });
                              map.remove();
                              carteChargee = true;
                          }
