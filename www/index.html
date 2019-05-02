@@ -399,15 +399,15 @@
               }
               
               
-              var map = L.map('mapid');
+              var mapid = L.map('mapid');
               var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
               var osmAttrib = "Map data © OpenStreetMap contributors";
                   
                   var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
               
-              map.addLayer(osm);
+              mapid.addLayer(osm);
               
-              afficheMarkers("all", map);
+              afficheMarkers("all", mapid);
                   
                   var controlFou = new L.Control.Gps({
                   transform: function(realGps){
@@ -419,12 +419,12 @@
                   marker: L.marker([tinnedGps.lat, tinnedGps.lng])
               });
               
-              map.addControl(controlFou);
+              mapid.addControl(controlFou);
                   
                   $('.gps-button').on('click', function(){
                                        if(!$(this).hasClass('active')){
                                            
-                                           map.setView([48.7942, 2.46172], 15);
+                                           mapid.setView([48.7942, 2.46172], 15);
                                        } 
                                     });
               
@@ -450,7 +450,7 @@
                               chainehtml = '<ons-list-item modifier="longdivider"><p>Pas de correspondance</p></ons-list-item>';
                           }
                               $('#places_list').html(chainehtml);
-                          autocompleteSearch('#places_list ons-list-item', $('ons-search-input'), (data.length !== 0), map);
+                          autocompleteSearch('#places_list ons-list-item', $('ons-search-input'), (data.length !== 0), mapid);
                           
                       }
                   });
@@ -550,13 +550,13 @@
                         } else if(page.id === "perso_carte"){
                                   
                             
-                            var map = L.map('mapperso');
+                            var mapperso = L.map('mapperso');
               var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
               var osmAttrib = "Map data © OpenStreetMap contributors";
                             
                             var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
               
-              map.addLayer(osm);
+              mapperso.addLayer(osm);
                             
                             var tableauLieux = [];
                             
@@ -564,7 +564,7 @@
                             
                             navigator.geolocation.getCurrentPosition(function(position){
                                
-                                map.setView([position.coords.latitude, position.coords.longitude], 12);
+                                mapperso.setView([position.coords.latitude, position.coords.longitude], 12);
                                 
                                 tableauLieux.push(L.latLng(position.coords.latitude, position.coords.longitude));
                                 
@@ -578,7 +578,7 @@
                                         lineOptions: {
                                             addWaypoints: false
                                         }
-              }).addTo(map);
+              }).addTo(mapperso);
                                 $('.leaflet-right').hide();
                                 
                             });
@@ -587,13 +587,13 @@
                         
                             page.querySelector('ons-toolbar .center').textContent = page.data.title;
                             
-                            var map = L.map('map_parcours');
+                            var mapparcours = L.map('map_parcours');
               var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
               var osmAttrib = "Map data © OpenStreetMap contributors";
                   
                   var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
               
-              map.addLayer(osm);
+              mapparcours.addLayer(osm);
                                       
     if(page.data.type === "secteur"){
                                           $.ajax({
@@ -610,7 +610,7 @@
                                     
                                     navigator.geolocation.getCurrentPosition(function(position){
                                         
-                                        map.setView([position.coords.latitude, position.coords.longitude], 12);
+                                        mapparcours.setView([position.coords.latitude, position.coords.longitude], 12);
                                        tableauWaypoints.push(L.latLng(position.coords.latitude, position.coords.longitude)); 
                                         
                                         $.each(data, function(i){
@@ -625,7 +625,7 @@
                                         lineOptions: {
                                             addWaypoints: false
                                         }
-              }).addTo(map);
+              }).addTo(mapparcours);
                                         
                                     });
                                     
@@ -646,7 +646,7 @@
                                     
                                     navigator.geolocation.getCurrentPosition(function(position){
                                         
-                                        map.setView([position.coords.latitude, position.coords.longitude], 12);
+                                        mapparcours.setView([position.coords.latitude, position.coords.longitude], 12);
                                        tableauWaypoints.push(L.latLng(position.coords.latitude, position.coords.longitude)); 
                                         
                                         $.each(data, function(i){
@@ -661,7 +661,7 @@
                                         lineOptions: {
                                             addWaypoints: false
                                         }
-              }).addTo(map);
+              }).addTo(mapparcours);
                                         
                                     });
                                     
