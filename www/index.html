@@ -57,7 +57,7 @@
         </ons-toolbar>
         <div id="search-bar">
             <ons-search-input placeholder="Search..." modifier="material"></ons-search-input>
-        </div><br><br>
+        </div><br><br><br><br>
         <ons-list></ons-list>
     </ons-page>
 </template>
@@ -730,8 +730,8 @@
                                      if(i === 0){
                                          
                                          var myIcon = L.icon({
-                                            iconUrl: 'img/rondvert.png',
-                                             iconSize: [30, 30],
+                                            iconUrl: 'img/pointer.gif',
+                                             iconSize: [60, 60],
                                              iconAnchor: [22, 94]
                                          });
                                          
@@ -836,7 +836,7 @@
                          
                          console.log("Réactualisé 3");
                          
-                         var tableauLatlng = [], route;
+                         var tableauLatlng = [];
                          
                          
                          if(!carteChargee){
@@ -860,11 +860,6 @@
                                      tableauLatlng = [];
                                  }
                              
-                             /*if(route !== "" || route !== undefined){
-                                 map.removeLayer(route);
-                                 route = "";
-                             }*/
-                             
                              
                              map.eachLayer(function(layer){
                                  
@@ -873,10 +868,6 @@
                                 if(layer._latlng){
                                    tableauLatlng.push(layer);
                                 }
-                                 
-                                 if(layer._route){
-                                     console.log(layer._route);
-                                 }
                          });
                              
                              
