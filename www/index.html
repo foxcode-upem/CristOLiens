@@ -579,7 +579,9 @@
                                         lineOptions: {
                                             addWaypoints: false
                                         }
-              }).addTo(mapperso);
+              }).addTo(mapperso).on('routesfound', function(){
+                        page.querySelector('.leaflet-top.leaflet-left .leaflet-control-zoom .leaflet-control-zoom-out').click(); 
+                                    });
                                 $('.leaflet-right').hide();
                                 
                             });
@@ -626,11 +628,14 @@
                                         lineOptions: {
                                             addWaypoints: false
                                         }
-              }).addTo(mapparcours);
+              }).addTo(mapparcours).on('routesfound', function(){
+                        page.querySelector('.leaflet-top.leaflet-left .leaflet-control-zoom .leaflet-control-zoom-out').click(); 
+                                    });
                                         
                                     });
                                     
                                 }
+                                              
                             });
                                       } else if(page.data.type === "theme"){
                                           $.ajax({
@@ -662,7 +667,9 @@
                                         lineOptions: {
                                             addWaypoints: false
                                         }
-              }).addTo(mapparcours);
+              }).addTo(mapparcours).on('routesfound', function(){
+                        page.querySelector('.leaflet-top.leaflet-left .leaflet-control-zoom .leaflet-control-zoom-out').click(); 
+                                    });
                                         
                                     });
                                     
@@ -733,7 +740,9 @@
                                          return L.marker(waypoint.latLng);
                                      }
                                  }
-              }).addTo(map);
+              }).addTo(map).on('routesfound', function(){
+                        page.querySelector('.leaflet-top.leaflet-left .leaflet-control-zoom .leaflet-control-zoom-out').click(); 
+                                    });
                      
                      var coords = encodeURI(''+ latlng.lng +','+ latlng.lat +';2.6022836,48.8531191');
                      
@@ -811,9 +820,6 @@
                      console.log("Réactualisé");
                      
                          if(map != undefined || map != null){
-                             map.eachLayer(function(layer){
-                            map.removeLayer(layer);
-                         });
                              map.remove();
                              carteChargee = true;
                          }
@@ -830,6 +836,9 @@
                          
                          console.log("Réactualisé 3");
                          
+                         var tableauLatlng = [], route;
+                         
+                         
                          if(!carteChargee){
                              
                              new GPSControl({
@@ -843,6 +852,32 @@
                              
                              appelMapbox(latlng);
                              
+                             if(tableauLatlng.length > 0){
+                                     for(var k = 0; k < tableauLatlng.length; k++){
+                                         map.removeLayer(tableauLatlng[k]);
+                                     }
+                                     
+                                     tableauLatlng = [];
+                                 }
+                             
+                             /*if(route !== "" || route !== undefined){
+                                 map.removeLayer(route);
+                                 route = "";
+                             }*/
+                             
+                             
+                             map.eachLayer(function(layer){
+                                 
+                                 console.log(layer);
+                                 
+                                if(layer._latlng){
+                                   tableauLatlng.push(layer);
+                                }
+                                 
+                                 if(layer._route){
+                                     console.log(layer._route);
+                                 }
+                         });
                              
                              
                              
