@@ -737,13 +737,13 @@ h6 {
  align-items:stretch;
  -webkit-flex-wrap:nowrap;
  flex-wrap:nowrap;
- background:bottom no-repeat #fafafa;
+ /*background:bottom no-repeat #fafafa;*/
  color:#1f1f21;
  font-weight:400;
  width:100%;
  white-space:nowrap;
  background-size:100% 1px;
- background-image:linear-gradient(0deg,#b2b2b2,#b2b2b2 100%)
+ /*background-image:linear-gradient(0deg,#b2b2b2,#b2b2b2 100%)*/
 }
 .bottom-bar,
 .button {
@@ -753,7 +753,7 @@ h6 {
 }
 @media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi),(min-resolution:2dppx) {
  .toolbar {
-  background-image:linear-gradient(0deg,#b2b2b2,#b2b2b2 50%,transparent 50%)
+  /*background-image:linear-gradient(0deg,#b2b2b2,#b2b2b2 50%,transparent 50%)*/
  }
 }
 .toolbar__bg {

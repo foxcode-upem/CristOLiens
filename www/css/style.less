@@ -1,5 +1,9 @@
 @purple:#4B044D;
 /*Page : liste point d'intérêt*/
+@font-face {
+font-family: 'ViceCity';
+src: url('../font/ViceCitySans.otf');
+}
 ons-list-item, .homelink, .list-item{
     list-style-type: none;
     list-style:none;
@@ -67,13 +71,13 @@ template[id="carte.html"]{
             >div #mapid{
                 position:absolute;
                 bottom:0;
-                height: 100vh;
+                height: 100%;
             }
         }
        
     }
 }
-ons-page div#mapid, ons-page div#map_parcours, ons-page div#maptest, ons-page div#mapperso {
+ons-page div#mapid, ons-page div#map_parcours {
     height: 100vh;
     position: relative;
     z-index: 1;
@@ -98,6 +102,7 @@ ons-page ons-toolbar {
 }
 .ons-toolbar {
     background-color:@purple;
+    fill: white;
     .left{
         color: white;
         
@@ -154,8 +159,13 @@ ons-page ons-toolbar {
 
     }
 }
+//TOOLBAR
 #toolbar-back-button{   
         fill: white;     
+}
+ons-toolbar{
+    background-color:@purple;
+
 }
 .back-button__label{
     color: white;
@@ -166,7 +176,10 @@ ons-page ons-toolbar {
 .back-button__icon{
     fill: #ffffff;
 }
-
+.toolbar__title{
+    color:#fff;
+}
+//SEARCH
 #liste_pt_interet #search-bar ons-search-input{
     position: top;
     margin: 0 auto;
@@ -176,4 +189,14 @@ ons-page ons-toolbar {
 div #search-bar{
     background-color:#4b044d;
     padding: 2% 0 4% 0 ;
+    position:fixed;
+    z-index:25;
+    width: 100%;
+}
+
+//Affichage map test
+ons-page div #maptest{
+    height:100vh;
+    position:relative;
+    z-index: 1;
 }
