@@ -182,7 +182,7 @@
           var navigatorM = document.querySelector('#myNavigator');
               
               
-              tracesItineraires = [], map = undefined;
+              tracesItineraires = [], map = undefined, tableauPoints = [];
                      
                      function convertToMinutes(duration){
                          var duration = ""+ duration/60 + "";
@@ -208,6 +208,15 @@
               
               
               function appelMapbox(latlng, tableauWaypoints){
+                  
+                  if(tableauPoints.length === 0){
+                      tableauWaypoints.splice(0, 0, latlng);
+                      tableauPoints = tableauWaypoints;
+                  } else {
+                      tableauPoints.splice(0, 1, latlng);
+                  }
+                  
+                  console.log(tableauPoints);
                          
                          if(latlng == undefined || latlng == null){
                              latlng = globalLatLng;
@@ -229,8 +238,6 @@
                              
                              tracesItineraires = [];
                          }
-                  
-                  tableauWaypoints.splice(0, 0, latlng);
                              
                             var routing = L.Routing.control({
                   waypoints: tableauWaypoints,
@@ -337,7 +344,7 @@
                              
                              $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +', '+ convertToMinutes(data.routes[0].duration) +'</strong><br><br><i>'+ convertToKilometers(data.routes[0].legs[0].distance) +' avant le prochain point d\'intérêt</i></blockquote>');
                              
-                             if(Math.trunc((data.routes[0].legs[0].distance/1000).toPrecision(3)) === 0){
+                             if((data.routes[0].legs[0].distance/1000).toPrecision(3) < 0.1){
                                  ons.notification.alert("<h3>Bienvenue à la Mairie de Champs</h3>");
                              }
                              
@@ -411,6 +418,8 @@
               
               
               if(page.id === "home"){
+                  tableauPoints = [];
+                  
                   var tableauLiens = page.querySelectorAll('.homebackground .homemask ons-list-item');
                   
                   for(var i = 0; i < tableauLiens.length; i++){
@@ -419,6 +428,8 @@
                       });
                   }
               } else if (page.id === 'liste_pt_interet'){
+                  
+                  tableauPoints = [];
                   
                   function clickListItem(navigation){
                       $('ons-list-item').on('click', function(){
@@ -499,6 +510,8 @@
                          
                          } else if(page.id === "pt_interet"){
                              
+                             tableauPoints = [];
+                             
                              $.ajax({
                                 url: 'https://theosenilh.fr/api_appli_creteil/json_coords.php',
                                  method: 'GET',
@@ -543,6 +556,8 @@
                              
                              
                          } else if(page.id === "carte"){
+                             
+                             tableauPoints = [];
               
               function afficheMarkers(infoRecup, map){
                   
@@ -692,6 +707,7 @@
               });
                 } else if(page.id === "liste_parcours"){
                     
+                    tableauPoints = [];
                     
                     function listeParcours(option){
                             return $.ajax({
@@ -746,6 +762,8 @@
                         } else if(page.id === "perso_parcours"){
                             
                             checkedPlaces = [];
+                            
+                            tableauPoints = [];
                             
                             $('ons-list').html('<br><br><div class="center"><ons-progress-circular indeterminate class="center"></ons-progress-circular></div>');
                            
