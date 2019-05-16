@@ -173,10 +173,6 @@ ons.ready(function(){
                              
                              $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +', '+ convertToMinutes(data.routes[0].duration) +'</strong><br><br><i>'+ convertToKilometers(data.routes[0].legs[0].distance) +' avant le prochain point d\'intérêt</i></blockquote>');
                              
-                             if((data.routes[0].legs[0].distance/1000).toPrecision(3) < 0.1){
-                                 ons.notification.alert("<h3>Bienvenue à la Mairie de Champs</h3>");
-                             }
-                             
                          }
                      });
                      }
