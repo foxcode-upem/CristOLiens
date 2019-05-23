@@ -60,6 +60,10 @@ ons.ready(function(){
                              
                              map.setView([latlng.lat, latlng.lng], 18);
                   
+                  map.setMinZoom(16);
+                  
+                  map.setMaxZoom(17);
+                  
                   console.log(tracesItineraires);
                          
                          if(tracesItineraires.length > 0){
