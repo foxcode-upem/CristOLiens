@@ -55,8 +55,8 @@
            </div>
             <div class="center">Liste des points d'intérêts</div>
         </ons-toolbar>
-        <div id="search-bar">
-            <ons-search-input placeholder="Search..." modifier="material"></ons-search-input>
+        <div class="search-bar">
+            <ons-search-input placeholder="Chercher..." modifier="material"></ons-search-input>
         </div><br><br><br><br>
         <ons-list></ons-list>
     </ons-page>
@@ -85,13 +85,13 @@
              <div class="left">
                <ons-back-button>Retour</ons-back-button>
            </div>
-              <div class="center">Carte interactive</div>
+              <div class="center">Carte de créteil</div>
           </ons-toolbar>
-          <br><br>
-          <ons-search-input placeholder="Search..." modifier="material"></ons-search-input>
+          <div id="map_carte-interactive" class="search-bar">
+           <ons-search-input placeholder="Chercher..." modifier="material"></ons-search-input>
+          </div>
           <ons-list id="places_list">
           </ons-list>
-          <p>Carte de Créteil : </p>
           <div id="mapid"></div>
       </ons-page>
   </template>
