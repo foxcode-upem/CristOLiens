@@ -1,4 +1,5 @@
 @purple:#4B044D;
+@green:#9DAC1F;
 /*Page : liste point d'intérêt*/
 @font-face {
 font-family: 'ViceCity';
@@ -177,3 +178,46 @@ div #mapid{
         // height: auto;
         // margin-top: 70.1167px;
     }
+
+//LEAFLET Navigation
+
+.leaflet-routing-alt{
+    height: 88px;
+    background-color:@green !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    color:white;
+    display: flex;
+    >div{
+        display: flex;
+        width: 10%;
+        fill: white;
+
+        >span{
+
+        }
+    }
+    >strong{
+        width: 15%;
+        display: flex;
+    }
+    >h1{
+        display: flex;
+        font-size: 20px !important;
+        font-weight: bold;
+        left: 0;
+    }
+    >blockquote{
+
+    }
+}
+.leaflet-top .leaflet-left{
+    
+}
+.leaflet-touch .leaflet-bar{
+    border: 0!important;
+}
+
+ .leaflet-container{
+     font:"Helvetica Neue", Arial, Helvetica, sans-serif !important;
+ }
