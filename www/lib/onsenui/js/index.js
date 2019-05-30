@@ -58,7 +58,7 @@ ons.ready(function(){
                          
                          var waypoint = L.latLng(latlng.lat, latlng.lng);
                              
-                             map.setView([latlng.lat, latlng.lng], 18);
+                             map.setView([latlng.lat, latlng.lng], 17);
                   
                   map.setMinZoom(16);
                   
@@ -176,6 +176,10 @@ ons.ready(function(){
                              $('.leaflet-top.leaflet-right').html('<div class="leaflet-routing-container leaflet-bar leaflet-routing-collapsible leaflet-control"><div class="leaflet-routing-alternatives-container"><div class="leaflet-routing-alt"><div><span class="leaflet-routing-icon leaflet-routing-icon-'+ turnInstruction +'"></span></div><strong>'+ data.routes[0].legs[0].steps[0].distance.toPrecision(3) +' m</strong><h1>' + data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.text + '</h1></div></div></div>').show();
                              
                              $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +', '+ convertToMinutes(data.routes[0].duration) +'</strong><br><br><i>'+ convertToKilometers(data.routes[0].legs[0].distance) +' avant le prochain point d\'intérêt</i></blockquote>');
+                             
+                             if(convertToKilometers(data.routes[0].legs[0].distance) <= 0.01){
+                                 ons.notification.alert("Vous êtes arrivés à la airie de Champs");
+                             }
                              
                          }
                      });
@@ -712,7 +716,7 @@ ons.ready(function(){
                          $('.leaflet-bar.gps-control').hide();
                      })();
                      
-                     intervalleAppel('maptest', [L.latLng(48.8530115, 2.6006474)]);
+                     intervalleAppel('maptest', [L.latLng(48.8366345, 2.5838218)]);
                      
 //Utile pour tester l'appli sans se déplacer
                      
