@@ -28,7 +28,7 @@ ons.ready(function(){
                      }
                      
                      function convertToKilometers(distance){
-                         return (distance/1000).toPrecision(3) + "km";
+                         return (distance/1000).toPrecision(3);
                      }
               
               
@@ -129,6 +129,8 @@ ons.ready(function(){
                              
                              console.log(convertToKilometers(data.routes[0].distance));
                              
+                             console.log(convertToKilometers(data.routes[0].distance) <= 0.01);
+                             
                              if(data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.type === "arrive"){
                                  turnInstruction = "arrive";
                              } else {
@@ -175,10 +177,38 @@ ons.ready(function(){
                              
                              $('.leaflet-top.leaflet-right').html('<div class="leaflet-routing-container leaflet-bar leaflet-routing-collapsible leaflet-control"><div class="leaflet-routing-alternatives-container"><div class="leaflet-routing-alt"><div><span class="leaflet-routing-icon leaflet-routing-icon-'+ turnInstruction +'"></span></div><strong>'+ data.routes[0].legs[0].steps[0].distance.toPrecision(3) +' m</strong><h1>' + data.routes[0].legs[0].steps[0].bannerInstructions[0].primary.text + '</h1></div></div></div>').show();
                              
-                             $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +', '+ convertToMinutes(data.routes[0].duration) +'</strong><br><br><i>'+ convertToKilometers(data.routes[0].legs[0].distance) +' avant le prochain point d\'intérêt</i></blockquote>');
+                             $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +'km, '+ convertToMinutes(data.routes[0].duration) +'</strong><br><br><i>'+ convertToKilometers(data.routes[0].legs[0].distance) +'km avant le prochain point d\'intérêt</i></blockquote>');
+                             
+                             if(convertToKilometers(data.routes[0].distance) <= 0.01){
+                                 ons.notification.alert("<h3>Parcours terminé</h3>").then(function(){
+                                    navigatorM.popPage(); 
+                                    
+                                 });
+                             }
                              
                              if(convertToKilometers(data.routes[0].legs[0].distance) <= 0.01){
-                                 ons.notification.alert("Vous êtes arrivés à la airie de Champs");
+                                 
+                                 $.ajax({
+                     url: 'https://theosenilh.fr/api_appli_creteil/places_by_latlng.php',
+                         method: 'GET',
+                         data: {api_key: "jdhey7te6", lat: tableauPoints[1].lat, lng: tableauPoints[1].lng},
+                         dataType: 'json',
+                         success: function(data){
+                             
+                             console.log(data);
+                             
+                             var json_infos;
+                             
+                             json_infos = data[0];
+                             
+                             console.log(json_infos);
+                             
+                             var chaine_html = "<h3>"+ json_infos.nom_point_interet +"</h3><img src=\""+ json_infos.photo_point_interet +"\" alt=\"Photo du lieu\" title=\"Photo du lieu\"><br><br><p>"+ json_infos.description_point_interet +"</p><i>"+ json_infos.adresse_point_interet +"</i>";
+                             
+                             ons.notification.alert(chaine_html);
+                         }
+                  });
+                                 
                              }
                              
                          }
@@ -227,7 +257,7 @@ ons.ready(function(){
                                  }
                              
                              
-                             appelMapbox(latlng, tableauWaypoints);
+                             appelMapbox(L.latLng(48.796, 2.45226), tableauWaypoints);
                              
                              
                              map.eachLayer(function(layer){
