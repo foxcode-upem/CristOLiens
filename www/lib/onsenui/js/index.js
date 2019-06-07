@@ -257,7 +257,7 @@ ons.ready(function(){
                                  }
                              
                              
-                             appelMapbox(L.latLng(48.796, 2.45226), tableauWaypoints);
+                             appelMapbox(latlng, tableauWaypoints);
                              
                              
                              map.eachLayer(function(layer){
