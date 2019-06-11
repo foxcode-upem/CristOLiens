@@ -1,4 +1,4 @@
-ons.ready(function(){
+
          console.log('Ready');
           var globalLatLng;
           timer = -1;
@@ -11,7 +11,7 @@ ons.ready(function(){
           var navigatorM = document.querySelector('#myNavigator');
               
               
-              tracesItineraires = [], map = undefined, tableauPoints = [];
+              tracesItineraires = [], map = undefined, tableauPoints = [], index = 0;
                      
                      function convertToMinutes(duration){
                          var duration = ""+ duration/60 + "";
@@ -179,14 +179,14 @@ ons.ready(function(){
                              
                              $('.leaflet-top.leaflet-right .leaflet-routing-container .leaflet-routing-alternatives-container .leaflet-routing-alt').append('<blockquote><strong>'+ convertToKilometers(data.routes[0].distance) +'km, '+ convertToMinutes(data.routes[0].duration) +'</strong><br><br><i>'+ convertToKilometers(data.routes[0].legs[0].distance) +'km avant le prochain point d\'intérêt</i></blockquote>');
                              
-                             if(convertToKilometers(data.routes[0].distance) <= 0.01){
+                             if(convertToKilometers(data.routes[0].distance) <= 0.1){
                                  ons.notification.alert("<h3>Parcours terminé</h3>").then(function(){
                                     navigatorM.popPage(); 
                                     
                                  });
                              }
                              
-                             if(convertToKilometers(data.routes[0].legs[0].distance) <= 0.01){
+                             if(convertToKilometers(data.routes[0].legs[0].distance) <= 0.1){
                                  
                                  $.ajax({
                      url: 'https://theosenilh.fr/api_appli_creteil/places_by_latlng.php',
@@ -205,7 +205,9 @@ ons.ready(function(){
                              
                              var chaine_html = "<h3>"+ json_infos.nom_point_interet +"</h3><img src=\""+ json_infos.photo_point_interet +"\" alt=\"Photo du lieu\" title=\"Photo du lieu\"><br><br><p>"+ json_infos.description_point_interet +"</p><i>"+ json_infos.adresse_point_interet +"</i>";
                              
-                             ons.notification.alert(chaine_html);
+                             ons.notification.alert(chaine_html).then(function(){
+                                 index += 1;
+                             });
                          }
                   });
                                  
@@ -257,7 +259,7 @@ ons.ready(function(){
                                  }
                              
                              
-                             appelMapbox(latlng, tableauWaypoints);
+                             appelMapbox(L.latLng(48.796, 2.45226), tableauWaypoints);
                              
                              
                              map.eachLayer(function(layer){
@@ -281,7 +283,7 @@ ons.ready(function(){
               
               
               if(page.id === "home"){
-                  tableauPoints = [];
+                  tableauPoints = [], index = 0;
                   
                   var tableauLiens = page.querySelectorAll('.homebackground .homemask ons-list-item');
                   
@@ -292,7 +294,7 @@ ons.ready(function(){
                   }
               } else if (page.id === 'liste_pt_interet'){
                   
-                  tableauPoints = [];
+                  tableauPoints = [], index = 0;
                   
                   function clickListItem(navigation){
                       $('ons-list-item').on('click', function(){
@@ -373,7 +375,7 @@ ons.ready(function(){
                          
                          } else if(page.id === "pt_interet"){
                              
-                             tableauPoints = [];
+                             tableauPoints = [], index = 0;
                              
                              $.ajax({
                                 url: 'https://theosenilh.fr/api_appli_creteil/json_coords.php',
@@ -420,7 +422,7 @@ ons.ready(function(){
                              
                          } else if(page.id === "carte"){
                              
-                             tableauPoints = [];
+                             tableauPoints = [], index = 0;
               
               function afficheMarkers(infoRecup, map){
                   
@@ -570,7 +572,7 @@ ons.ready(function(){
               });
                 } else if(page.id === "liste_parcours"){
                     
-                    tableauPoints = [];
+                    tableauPoints = [], index = 0;
                     
                     function listeParcours(option){
                             return $.ajax({
@@ -626,7 +628,7 @@ ons.ready(function(){
                             
                             checkedPlaces = [];
                             
-                            tableauPoints = [];
+                            tableauPoints = [], index = 0;
                             
                             $('ons-list').html('<br><br><div class="center"><ons-progress-circular indeterminate class="center"></ons-progress-circular></div>');
                            
@@ -674,6 +676,10 @@ ons.ready(function(){
                                     tableauLieux.push(L.latLng(JSON.parse($(page.data.checked_elements[i]).val())));
                                 }
                             
+                            if(index > 0){
+                                        tableauLieux.splice(index);
+                                    }
+                            
                             intervalleAppel('mapperso', tableauLieux);
                                   
                                   } else if(page.id === "carte_parcours"){
@@ -702,7 +708,9 @@ ons.ready(function(){
                                        tableauWaypoints.push(L.latLng(parseFloat(data[i].latitude_point_interet), parseFloat(data[i].longitude_point_interet))); 
                                     });
                                     
-                                    console.log(tableauWaypoints);
+                                    if(index > 0){
+                                        tableauWaypoints.splice(index);
+                                    }
                                     
                                     intervalleAppel('map_parcours', tableauWaypoints);
                                     
@@ -729,6 +737,10 @@ ons.ready(function(){
                                         $.each(data, function(i){
                                        tableauWaypoints.push(L.latLng(parseFloat(data[i].latitude_point_interet), parseFloat(data[i].longitude_point_interet))); 
                                     });
+                                                  
+                                                  if(index > 0){
+                                        tableauWaypoints.splice(index);
+                                    }
                                     
                                     console.log(tableauWaypoints);
                                                   
@@ -755,5 +767,4 @@ ons.ready(function(){
                      
     }
           
-      });
       });
