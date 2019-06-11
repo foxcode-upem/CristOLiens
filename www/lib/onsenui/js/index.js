@@ -32,20 +32,85 @@
                      }
               
               
+              function appelParcours(type){
+                  if(type === "secteur"){
+                                          $.ajax({
+                               url: 'https://theosenilh.fr/api_appli_creteil/liste_points_interet_parcours.php',
+                                method: 'GET',
+                                data: {api_key: "jdhey7te6", parcours_id: parseInt(page.data.id)},
+                                dataType: 'json',
+                                success: function(data){
+                                    
+                                    (function(){
+                         $('.leaflet-top.leaflet-right').hide();
+                         
+                         $('.leaflet-bar.gps-control').hide();
+                     })();
+                                    
+                                    console.log(data);
+                                    
+                                    var tableauWaypoints = [];
+                                        
+                                        $.each(data, function(i){
+                                       tableauWaypoints.push(L.latLng(parseFloat(data[i].latitude_point_interet), parseFloat(data[i].longitude_point_interet))); 
+                                    });
+                                    
+                                    if(index > 0){
+                                        tableauWaypoints.slice(index);
+                                    }
+                                    
+                                    intervalleAppel('map_parcours', tableauWaypoints, type);
+                                    
+                                }
+                                              
+                            });
+                                      } else if(type === "theme"){
+                                          $.ajax({
+                                             url: "https://theosenilh.fr/api_appli_creteil/liste_points_interet_theme.php",
+                                              method: 'GET',
+                                              data: {api_key: "jdhey7te6", theme_id: parseInt(page.data.id)},
+                                              dataType: 'json',
+                                              success: function(data){
+                    (function(){
+                         $('.leaflet-top.leaflet-right').hide();
+                         
+                         $('.leaflet-bar.gps-control').hide();
+                     })();
+                                    
+                                    console.log(data);
+                                    
+                                    var tableauWaypoints = [];
+                                        
+                                        $.each(data, function(i){
+                                       tableauWaypoints.push(L.latLng(parseFloat(data[i].latitude_point_interet), parseFloat(data[i].longitude_point_interet))); 
+                                    });
+                                                  
+                                                  if(index > 0){
+                                        tableauWaypoints.slice(index);
+                                    }
+                                    
+                                    console.log(tableauWaypoints);
+                                                  
+                                                  intervalleAppel('map_parcours', tableauWaypoints, type);
+                                    
+                                }
+                                          });
+              }
+                  
+              }
               
               
               
-              
-              function appelMapbox(latlng, tableauWaypoints){
+              function appelMapbox(latlng, tableauWaypoints, type){
                   
                   if(tableauPoints.length === 0){
                       tableauWaypoints.splice(0, 0, latlng);
                       tableauPoints = tableauWaypoints;
                   } else {
-                      tableauPoints.splice(0, 1, latlng);
+                      tableauWaypoints.splice(0, 1, latlng);
                   }
                   
-                  console.log(tableauPoints);
+                  console.log(tableauWaypoints);
                          
                          if(latlng == undefined || latlng == null){
                              latlng = globalLatLng;
@@ -207,6 +272,7 @@
                              
                              ons.notification.alert(chaine_html).then(function(){
                                  index += 1;
+                                 appelParcours(type);
                              });
                          }
                   });
@@ -217,7 +283,7 @@
                      });
                      }
               
-              function intervalleAppel(nomCarte, tableauWaypoints){
+              function intervalleAppel(nomCarte, tableauWaypoints, type){
                          
                      console.log("Réactualisé");
                      
@@ -259,7 +325,7 @@
                                  }
                              
                              
-                             appelMapbox(L.latLng(48.796, 2.45226), tableauWaypoints);
+                             appelMapbox(L.latLng(48.796, 2.45226), tableauWaypoints, type);
                              
                              
                              map.eachLayer(function(layer){
@@ -686,69 +752,7 @@
                         
                             page.querySelector('ons-toolbar .center').textContent = page.data.title;
                                       
-    if(page.data.type === "secteur"){
-                                          $.ajax({
-                               url: 'https://theosenilh.fr/api_appli_creteil/liste_points_interet_parcours.php',
-                                method: 'GET',
-                                data: {api_key: "jdhey7te6", parcours_id: parseInt(page.data.id)},
-                                dataType: 'json',
-                                success: function(data){
-                                    
-                                    (function(){
-                         $('.leaflet-top.leaflet-right').hide();
-                         
-                         $('.leaflet-bar.gps-control').hide();
-                     })();
-                                    
-                                    console.log(data);
-                                    
-                                    var tableauWaypoints = [];
-                                        
-                                        $.each(data, function(i){
-                                       tableauWaypoints.push(L.latLng(parseFloat(data[i].latitude_point_interet), parseFloat(data[i].longitude_point_interet))); 
-                                    });
-                                    
-                                    if(index > 0){
-                                        tableauWaypoints.splice(index);
-                                    }
-                                    
-                                    intervalleAppel('map_parcours', tableauWaypoints);
-                                    
-                                }
-                                              
-                            });
-                                      } else if(page.data.type === "theme"){
-                                          $.ajax({
-                                             url: "https://theosenilh.fr/api_appli_creteil/liste_points_interet_theme.php",
-                                              method: 'GET',
-                                              data: {api_key: "jdhey7te6", theme_id: parseInt(page.data.id)},
-                                              dataType: 'json',
-                                              success: function(data){
-                    (function(){
-                         $('.leaflet-top.leaflet-right').hide();
-                         
-                         $('.leaflet-bar.gps-control').hide();
-                     })();
-                                    
-                                    console.log(data);
-                                    
-                                    var tableauWaypoints = [];
-                                        
-                                        $.each(data, function(i){
-                                       tableauWaypoints.push(L.latLng(parseFloat(data[i].latitude_point_interet), parseFloat(data[i].longitude_point_interet))); 
-                                    });
-                                                  
-                                                  if(index > 0){
-                                        tableauWaypoints.splice(index);
-                                    }
-                                    
-                                    console.log(tableauWaypoints);
-                                                  
-                                                  intervalleAppel('map_parcours', tableauWaypoints);
-                                    
-                                }
-                                          });
-                                      }
+                                      appelParcours(page.data.type);
                             
                  } else if(page.id === "about"){
                      
