@@ -325,7 +325,7 @@
                                  }
                              
                              
-                             appelMapbox(L.latLng(48.796, 2.45226), tableauWaypoints, type);
+                             appelMapbox(latlng, tableauWaypoints, type);
                              
                              
                              map.eachLayer(function(layer){
