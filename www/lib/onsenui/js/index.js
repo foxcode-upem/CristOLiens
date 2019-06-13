@@ -32,7 +32,7 @@
                      }
               
               
-              function appelParcours(type){
+              function appelParcours(type, tableauLieux = []){
                   if(type === "secteur"){
                                           $.ajax({
                                url: 'https://theosenilh.fr/api_appli_creteil/liste_points_interet_parcours.php',
@@ -95,6 +95,13 @@
                                     
                                 }
                                           });
+              } else if(type === "perso" && tableauLieux.length > 0){
+                  
+                  if(index > 0){
+                                        tableauLieux.slice(index);
+                                    }
+                  
+                  intervalleAppel('mapperso', tableauLieux, type);
               }
                   
               }
@@ -272,7 +279,13 @@
                              
                              ons.notification.alert(chaine_html).then(function(){
                                  index += 1;
-                                 appelParcours(type);
+                                 
+                                 if(type === "perso"){
+                                     appelParcours(type, tableauWaypoints);
+                                 } else {
+                                     appelParcours(type);
+                                 }
+                                 
                              });
                          }
                   });
@@ -742,11 +755,7 @@
                                     tableauLieux.push(L.latLng(JSON.parse($(page.data.checked_elements[i]).val())));
                                 }
                             
-                            if(index > 0){
-                                        tableauLieux.splice(index);
-                                    }
-                            
-                            intervalleAppel('mapperso', tableauLieux);
+                            appelParcours("perso", tableauLieux);
                                   
                                   } else if(page.id === "carte_parcours"){
                         
@@ -754,7 +763,7 @@
                                       
                                       appelParcours(page.data.type);
                             
-                 } else if(page.id === "about"){
+                 } /* else if(page.id === "about"){
                      
                      (function(){
                          $('.leaflet-top.leaflet-right').hide();
@@ -769,6 +778,6 @@
 //timer = setInterval(appelMapbox, 5000);
                      
                      
-    }
+    }*/
           
       });
