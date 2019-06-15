@@ -147,7 +147,7 @@
                             var routing = L.Routing.control({
                   waypoints: tableauWaypoints,
                          language: 'fr',
-                          router: L.Routing.mapbox("pk.eyJ1IjoidGhlb2Rvcm9zIiwiYSI6ImNqb2sxdW01YTAyN28zb21uY21jeXMzY3cifQ._g5OAq0Wjfou_LsBW07TAQ", {profile: "mapbox/walking"}),
+                          router: L.Routing.mapbox("pk.eyJ1IjoidG9ueXlhbWkiLCJhIjoiY2p3eDlrbHE4MGJ4NzN6cGphdXM5NmlxNiJ9.u_zQPHlie8Fu6q6WjYcT6w", {profile: "mapbox/walking"}),
                              lineOptions: {
                                             addWaypoints: false,
                                  draggableWaypoints: false
