@@ -597,24 +597,7 @@
               
               afficheMarkers("all", mapid);
                   
-                  var controlFou = new L.Control.Gps({
-                  transform: function(realGps){
-                      tinnedGps.lat = realGps.lat;
-                      tinnedGps.lng = realGps.lng;
-                      return tinnedGps;
-                  },
-                  autoCenter: true,
-                  marker: L.marker([tinnedGps.lat, tinnedGps.lng])
-              });
-              
-              mapid.addControl(controlFou);
                   
-                  $('.gps-button').on('click', function(){
-                                       if(!$(this).hasClass('active')){
-                                           
-                                           mapid.setView([48.7942, 2.46172], 15);
-                                       } 
-                                    });
               
               $('ons-page ons-search-input').on('keyup', function(){
                  
